@@ -14,7 +14,7 @@ add_filter( 'members_remove_old_levels', '__return_false' );
 /**
  * Filters a user's capabilities depending on specific context and/or privilege.
  *
- * Only administrators are allowed to edit and delete other administrators.
+ * Only administrators are allowed to edit, delete or switch to other administrators.
  *
  * @param array  $caps    Returns the user's actual capabilities.
  * @param string $cap     Capability name.
@@ -23,7 +23,9 @@ add_filter( 'members_remove_old_levels', '__return_false' );
  * @return array The user's actual capabilities.
  */
 function map_meta_cap( $caps, $cap, $user_id, $args ) {
-	if ( 'edit_user' === $cap && isset( $args[0] ) ) {
+	$protected_caps = [ 'edit_user', 'switch_to_user' ];
+
+	if ( in_array( $cap, $protected_caps, true ) && isset( $args[0] ) ) {
 		$edit_user_id = (int) $args[0];
 
 		// Multisite - do not allowing editing site administrators.
