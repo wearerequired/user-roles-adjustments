@@ -23,9 +23,8 @@ add_filter( 'members_remove_old_levels', '__return_false' );
  * @return array The user's actual capabilities.
  */
 function map_meta_cap( $caps, $cap, $user_id, $args ) {
-	$protected_caps = [ 'edit_user', 'switch_to_user' ];
-
-	if ( in_array( $cap, $protected_caps, true ) && isset( $args[0] ) ) {
+	// Editing.
+	if ( 'edit_user' === $cap && isset( $args[0] ) ) {
 		$edit_user_id = (int) $args[0];
 
 		// Multisite - do not allowing editing site administrators.
@@ -35,6 +34,15 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
 		// Single site.
 		if ( $user_id !== $edit_user_id && user_can( $edit_user_id, 'delete_users' ) && ! user_can( $user_id, 'delete_users' ) ) {
+			$caps[] = 'do_not_allow';
+		}
+	}
+
+	// Promoting and switching.
+	if ( ( 'promote_user' === $cap || 'switch_to_user' === $cap ) && isset( $args[0] ) ) {
+		$edit_user_id = (int) $args[0];
+
+		if ( $user_id !== $edit_user_id && user_can( $edit_user_id, 'promote_users' ) && ! user_can( $user_id, 'delete_users' ) ) {
 			$caps[] = 'do_not_allow';
 		}
 	}
