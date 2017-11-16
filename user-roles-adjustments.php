@@ -23,18 +23,28 @@ add_filter( 'members_remove_old_levels', '__return_false' );
  * @return array The user's actual capabilities.
  */
 function map_meta_cap( $caps, $cap, $user_id, $args ) {
-	$protected_caps = [ 'edit_user', 'switch_to_user' ];
+	if ( ! isset( $args[0] ) ) {
+		return $caps;
+	}
+	$edit_user_id = (int) $args[0];
 
-	if ( in_array( $cap, $protected_caps, true ) && isset( $args[0] ) ) {
-		$edit_user_id = (int) $args[0];
+	// Don't make changes to users own caps or if user can delete users.
+	if ( $user_id === $edit_user_id || user_can( $user_id, 'delete_users' ) ) {
+		return $caps;
+	}
 
-		// Multisite - do not allowing editing site administrators.
-		if ( $user_id !== $edit_user_id && user_can( $edit_user_id, 'remove_users' ) && ! user_can( $user_id, 'remove_users' ) ) {
+	// Multisite - do not allowing removing users who can remove users.
+	if ( 'remove_user' === $cap ) {
+
+		if ( user_can( $edit_user_id, 'remove_users' ) ) {
 			$caps[] = 'do_not_allow';
 		}
+	}
 
-		// Single site.
-		if ( $user_id !== $edit_user_id && user_can( $edit_user_id, 'delete_users' ) && ! user_can( $user_id, 'delete_users' ) ) {
+	// Promoting, switching and editing.
+	if ( 'promote_user' === $cap || 'switch_to_user' === $cap || 'edit_user' === $cap ) {
+
+		if ( user_can( $edit_user_id, 'promote_users' ) ) {
 			$caps[] = 'do_not_allow';
 		}
 	}
