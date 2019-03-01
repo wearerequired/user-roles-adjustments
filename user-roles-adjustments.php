@@ -49,6 +49,15 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 		}
 	}
 
+	// Remove default manage_* cap.
+	if ( 'manage_privacy_options' === $cap ) {
+		$manage_cap = is_multisite() ? 'manage_network' : 'manage_options';
+		$caps       = array_diff( $caps, [ $manage_cap ] );
+
+		// Require manage_privacy_options.
+		$caps[] = $cap;
+	}
+
 	return $caps;
 }
 add_filter( 'map_meta_cap', __NAMESPACE__ . '\map_meta_cap', 10, 4 );
