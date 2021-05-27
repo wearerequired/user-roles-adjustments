@@ -2,7 +2,7 @@
     "name": "wearerequired/user-roles-adjustments",
     "description": "Custom functionality for user editing in combination with the Members plugin. Retains user levels and limits user editing capabilities.",
     "type": "wordpress-muplugin",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "required gmbh",
