@@ -28,8 +28,8 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 	}
 	$edit_user_id = (int) $args[0];
 
-	// Don't make changes to users own caps or if user can delete users.
-	if ( $user_id === $edit_user_id || user_can( $user_id, 'delete_users' ) ) {
+	// Don't make changes to users own caps or if user can activate plugins.
+	if ( $user_id === $edit_user_id || user_can( $user_id, 'activate_plugins' ) ) {
 		return $caps;
 	}
 
@@ -60,7 +60,7 @@ add_filter( 'map_meta_cap', __NAMESPACE__ . '\map_meta_cap', 10, 4 );
  * @return array Modified list of roles.
  */
 function filter_editable_roles( $all_roles ) {
-	if ( ! is_super_admin( get_current_user_id() ) ) {
+	if ( ! user_can( get_current_user_id(), 'activate_plugins' ) ) {
 		unset( $all_roles['administrator'], $all_roles['site_manager'] );
 	}
 
