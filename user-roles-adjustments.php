@@ -16,13 +16,13 @@ add_filter( 'members_remove_old_levels', '__return_false' );
  *
  * Only administrators are allowed to edit, delete or switch to other administrators.
  *
- * @param array  $caps    Returns the user's actual capabilities.
- * @param string $cap     Capability name.
- * @param int    $user_id The user ID.
- * @param array  $args    Adds the context to the cap. Typically the object ID.
- * @return array The user's actual capabilities.
+ * @param string[]       $caps    Returns the user's actual capabilities.
+ * @param string         $cap     Capability name.
+ * @param int            $user_id The user ID.
+ * @param (int|string)[] $args    Adds the context to the cap. Typically the object ID.
+ * @return string[] The user's actual capabilities.
  */
-function map_meta_cap( $caps, $cap, $user_id, $args ) {
+function map_meta_cap( array $caps, string $cap, int $user_id, array $args ): array {
 	if ( ! isset( $args[0] ) ) {
 		return $caps;
 	}
@@ -43,7 +43,7 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 		$caps[] = 'do_not_allow';
 	}
 
-	// Promoting, switching and editing.
+	// Single Site - do not allow promoting, switching and editing users who can promote users.
 	if ( 'promote_user' === $cap || 'switch_to_user' === $cap || 'edit_user' === $cap ) {
 
 		if ( user_can( $edit_user_id, 'promote_users' ) ) {
@@ -58,10 +58,10 @@ add_filter( 'map_meta_cap', __NAMESPACE__ . '\map_meta_cap', 10, 4 );
 /**
  * Removes Administrator from roles list if user isn't an admin themselves.
  *
- * @param array $all_roles List of roles.
- * @return array Modified list of roles.
+ * @param string[] $all_roles List of roles.
+ * @return string[] Modified list of roles.
  */
-function filter_editable_roles( $all_roles ) {
+function filter_editable_roles( array $all_roles ): array {
 	if ( ! user_can( get_current_user_id(), 'activate_plugins' ) ) {
 		unset( $all_roles['administrator'], $all_roles['site_manager'] );
 	}
