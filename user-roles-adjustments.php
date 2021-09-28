@@ -41,6 +41,11 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 		}
 	}
 
+	// Single Site - do not allow deleting users who can delete users.
+	if ( 'delete_user' === $cap && user_can( $edit_user_id, 'delete_users' ) ) {
+		$caps[] = 'do_not_allow';
+	}
+
 	// Promoting, switching and editing.
 	if ( 'promote_user' === $cap || 'switch_to_user' === $cap || 'edit_user' === $cap ) {
 
