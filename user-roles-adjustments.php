@@ -33,12 +33,9 @@ function map_meta_cap( $caps, $cap, $user_id, $args ) {
 		return $caps;
 	}
 
-	// Multisite - do not allowing removing users who can remove users.
-	if ( 'remove_user' === $cap ) {
-
-		if ( user_can( $edit_user_id, 'remove_users' ) ) {
-			$caps[] = 'do_not_allow';
-		}
+	// Multisite - do not allow removing users who can remove users.
+	if ( 'remove_user' === $cap && user_can( $edit_user_id, 'remove_users' ) ) {
+		$caps[] = 'do_not_allow';
 	}
 
 	// Single Site - do not allow deleting users who can delete users.
