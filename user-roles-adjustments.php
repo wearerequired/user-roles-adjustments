@@ -2,6 +2,7 @@
 /**
  * Plugin Name: User Roles Adjustments
  * Description: Custom functionality for user editing in combination with the Members plugin. Retains user levels and limits user editing capabilities.
+ * Version: 0.2.1
  * Author: required
  * Author URI: https://required.com
  */
