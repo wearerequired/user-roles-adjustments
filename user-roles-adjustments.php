@@ -23,7 +23,7 @@ add_filter( 'members_remove_old_levels', '__return_false' );
  * @return string[] The user's actual capabilities.
  */
 function map_meta_cap( array $caps, string $cap, int $user_id, array $args ): array {
-	if ( ! isset( $args[0] ) ) {
+	if ( ! isset( $args[0] ) || ! is_numeric( $args[0] ) ) {
 		return $caps;
 	}
 	$edit_user_id = (int) $args[0];
